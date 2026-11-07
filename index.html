@@ -148,18 +148,20 @@
 
   <script src="app.js"></script>
   <script>
-    // Secret trigger: If URL has #admin, automatically open the admin modal
-    window.addEventListener('DOMContentLoaded', () => {
+    // Force open admin modal if #admin is in the URL
+    function checkAdminHash() {
       if (window.location.hash === '#admin') {
-        setTimeout(() => {
-          if (typeof openAdminModal === 'function') openAdminModal();
-          else {
-            const modal = document.getElementById('admin-modal');
-            if (modal) modal.style.display = 'flex';
-          }
-        }, 500);
+        const modal = document.getElementById('admin-modal');
+        if (modal) {
+          modal.style.display = 'flex';
+        }
       }
-    });
+    }
+
+    window.addEventListener('DOMContentLoaded', checkAdminHash);
+    window.addEventListener('load', checkAdminHash);
+    window.addEventListener('hashchange', checkAdminHash);
   </script>
-</body>
+</body> 
 </html>
+  
