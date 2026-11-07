@@ -4,35 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Marhaba Hypermarket</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Header (Clean Customer UI - No Visible Admin Button) -->
+  <!-- Header -->
   <header class="navbar">
     <div class="logo-container">
       <img src="logo.png" alt="Marhaba Logo" class="app-logo" id="main-logo" onerror="this.style.display='none'">
       <span class="brand-name">MARHABA</span>
     </div>
     <div class="nav-actions">
-      <button class="icon-btn" id="cart-btn" onclick="openCartModal()"><i class="fas fa-shopping-cart"></i><span id="cart-badge">0</span></button>
+      <button class="icon-btn liquid-ripple" id="cart-btn" onclick="openCartModal()" aria-label="Cart">
+        <i class="fas fa-shopping-bag"></i>
+        <span id="cart-badge">0</span>
+      </button>
       <div class="dropdown">
-        <button class="icon-btn"><i class="fas fa-map-marker-alt"></i></button>
+        <button class="icon-btn liquid-ripple" aria-label="Locations"><i class="fas fa-compass"></i></button>
         <div class="dropdown-content">
-          <a href="https://maps.app.goo.gl/7ihuQEBx5pqGcPbz5" target="_blank"><i class="fas fa-store"></i> Othukkungal Branch</a>
-          <a href="https://maps.app.goo.gl/oe4WV6SbhhM6DbYZ9" target="_blank"><i class="fas fa-store"></i> Karuvarakkund Branch</a>
+          <a href="https://maps.app.goo.gl/7ihuQEBx5pqGcPbz5" target="_blank"><i class="fas fa-store-alt"></i> Othukkungal Branch</a>
+          <a href="https://maps.app.goo.gl/oe4WV6SbhhM6DbYZ9" target="_blank"><i class="fas fa-store-alt"></i> Karuvarakkund Branch</a>
         </div>
       </div>
-      <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-      <a href="tel:9847283286" class="call-btn"><i class="fas fa-phone-alt"></i> Call</a>
+      <button class="icon-btn liquid-ripple" id="theme-toggle" onclick="toggleTheme()" aria-label="Theme Toggle"><i class="fas fa-moon"></i></button>
+      <a href="tel:9847283286" class="call-btn liquid-glow"><i class="fas fa-headset"></i> Call</a>
     </div>
   </header>
 
   <!-- Search Bar -->
   <section class="search-container">
     <div class="search-box">
-      <i class="fas fa-search"></i>
-      <input type="text" id="search-input" placeholder="Search products, groceries, deals..." oninput="filterProducts()">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="search-input" placeholder="Search groceries, essentials, deals..." oninput="filterProducts()">
     </div>
   </section>
 
@@ -44,12 +47,12 @@
 
   <!-- Filter Categories -->
   <section class="filters-container">
-    <button class="filter-chip active" onclick="filterCategory('All', this)">All</button>
-    <button class="filter-chip" onclick="filterCategory('Vegetables', this)">Veg</button>
-    <button class="filter-chip" onclick="filterCategory('Rice & Grains', this)">Rice</button>
-    <button class="filter-chip" onclick="filterCategory('Beverages', this)">Bev</button>
-    <button class="filter-chip" onclick="filterCategory('Snacks & Spices', this)">Snacks</button>
-    <button class="filter-chip" onclick="filterCategory('Household', this)">Household</button>
+    <button class="filter-chip active" onclick="filterCategory('All', this)"><i class="fas fa-layer-group"></i> All</button>
+    <button class="filter-chip" onclick="filterCategory('Vegetables', this)"><i class="fas fa-carrot"></i> Veg</button>
+    <button class="filter-chip" onclick="filterCategory('Rice & Grains', this)"><i class="fas fa-seedling"></i> Rice</button>
+    <button class="filter-chip" onclick="filterCategory('Beverages', this)"><i class="fas fa-wine-glass-alt"></i> Bev</button>
+    <button class="filter-chip" onclick="filterCategory('Snacks & Spices', this)"><i class="fas fa-pepper-hot"></i> Snacks</button>
+    <button class="filter-chip" onclick="filterCategory('Household', this)"><i class="fas fa-home"></i> Household</button>
   </section>
 
   <!-- Product Grid -->
@@ -77,8 +80,8 @@
       </div>
 
       <div class="action-buttons">
-        <button class="btn btn-cart" onclick="addCurrentToCart()"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-        <button class="btn btn-wa" onclick="openOrderModal('single')"><i class="fab fa-whatsapp"></i> Buy via WhatsApp</button>
+        <button class="btn btn-cart liquid-glow" onclick="addCurrentToCart()"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+        <button class="btn btn-wa liquid-glow" onclick="openOrderModal('single')"><i class="fab fa-whatsapp"></i> Buy via WhatsApp</button>
       </div>
     </div>
   </div>
@@ -87,12 +90,13 @@
   <div class="modal" id="cart-modal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeCartModal()">&times;</span>
-      <h2>Your Shopping Cart</h2>
+      <h2><i class="fas fa-shopping-basket"></i> Your Cart</h2>
       <div id="cart-items-container"></div>
       <div class="cart-summary">
-        Total: ₹<span id="cart-total-price">0</span>
+        <span>Total Amount:</span>
+        <span class="total-highlight">₹<span id="cart-total-price">0</span></span>
       </div>
-      <button class="btn btn-wa full-width" onclick="openOrderModal('cart')"><i class="fab fa-whatsapp"></i> Order All via WhatsApp</button>
+      <button class="btn btn-wa full-width liquid-glow" onclick="openOrderModal('cart')"><i class="fab fa-whatsapp"></i> Order All via WhatsApp</button>
     </div>
   </div>
 
@@ -100,7 +104,7 @@
   <div class="modal" id="order-modal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeOrderModal()">&times;</span>
-      <h2>Customer Details</h2>
+      <h2><i class="fas fa-shipping-fast"></i> Delivery Details</h2>
       <form id="order-form" onsubmit="submitWhatsAppOrder(event)">
         <div class="form-group">
           <label>Full Name *</label>
@@ -112,21 +116,20 @@
         </div>
         <div class="form-group">
           <label>Delivery Address *</label>
-          <textarea id="cust-address" required placeholder="Enter your complete home address"></textarea>
+          <textarea id="cust-address" required placeholder="Enter your complete address"></textarea>
         </div>
-        <button type="submit" class="btn btn-wa full-width"><i class="fab fa-whatsapp"></i> Confirm Order & Send WhatsApp</button>
+        <button type="submit" class="btn btn-wa full-width liquid-glow"><i class="fab fa-whatsapp"></i> Confirm & Send WhatsApp</button>
       </form>
     </div>
   </div>
 
-  <!-- Hidden Admin Login & Dashboard Modal -->
+  <!-- Hidden Admin Login / Dashboard Modal -->
   <div class="modal" id="admin-modal">
     <div class="modal-content admin-modal-box">
       <span class="close-btn" onclick="closeAdminModal()">&times;</span>
       
-      <!-- Login Section -->
       <div id="admin-auth-container">
-        <h2>Admin Panel Login</h2>
+        <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
         <form onsubmit="adminLogin(event)">
           <div class="form-group">
             <label>Admin Email</label>
@@ -136,24 +139,21 @@
             <label>Password</label>
             <input type="password" id="admin-password" required placeholder="••••••••">
           </div>
-          <button type="submit" class="btn btn-cart full-width">Login to Dashboard</button>
+          <button type="submit" class="btn btn-cart full-width liquid-glow">Login to Dashboard</button>
         </form>
       </div>
 
-      <!-- Logged-In Dashboard Section -->
       <div id="admin-dashboard-container" style="display:none;">
         <div class="admin-header">
           <h2>Store Control Panel</h2>
           <button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
 
-        <!-- Tab Navigation -->
         <div class="admin-tabs">
           <button class="admin-tab-btn active" id="tab-btn-products" onclick="switchAdminTab('products')">Products</button>
           <button class="admin-tab-btn" id="tab-btn-banners" onclick="switchAdminTab('banners')">Banners</button>
         </div>
 
-        <!-- Products Manager Tab -->
         <div id="admin-tab-products" class="admin-tab-content">
           <div class="admin-card">
             <h3 id="product-form-title">Add New Product</h3>
@@ -198,7 +198,7 @@
                 <textarea id="admin-prod-desc" rows="2" placeholder="Brief details about the item"></textarea>
               </div>
               <div class="admin-form-actions">
-                <button type="submit" class="btn btn-cart"><i class="fas fa-save"></i> Save Product</button>
+                <button type="submit" class="btn btn-cart liquid-glow"><i class="fas fa-save"></i> Save Product</button>
                 <button type="button" class="btn btn-secondary" onclick="resetProductForm()">Cancel / Reset</button>
               </div>
             </form>
@@ -208,7 +208,6 @@
           <div id="admin-products-list" class="admin-list-container"></div>
         </div>
 
-        <!-- Banners Manager Tab -->
         <div id="admin-tab-banners" class="admin-tab-content" style="display:none;">
           <div class="admin-card">
             <h3>Add New Banner</h3>
@@ -221,7 +220,7 @@
                 <label>Image URL *</label>
                 <input type="url" id="admin-banner-image" required placeholder="https://images.unsplash.com/...">
               </div>
-              <button type="submit" class="btn btn-cart"><i class="fas fa-plus"></i> Add Banner</button>
+              <button type="submit" class="btn btn-cart liquid-glow"><i class="fas fa-plus"></i> Add Banner</button>
             </form>
           </div>
 
@@ -238,10 +237,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-  <!-- Application JS -->
   <script src="app.js"></script>
-
-  <!-- Secret URL Hash Trigger Script -->
   <script>
     function checkAdminHash() {
       if (window.location.hash === '#admin') {
