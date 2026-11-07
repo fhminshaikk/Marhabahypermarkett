@@ -8,25 +8,22 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Header -->
+  <!-- Header (No Admin Button Visible) -->
   <header class="navbar">
     <div class="logo-container">
-      <img src="logo.png" alt="Marhaba Logo" class="app-logo" id="main-logo" onerror="this.src='https://via.placeholder.com/40?text=M'">
+      <img src="logo.png" alt="Marhaba Logo" class="app-logo" id="main-logo">
       <span class="brand-name">MARHABA</span>
     </div>
     <div class="nav-actions">
-      <button class="icon-btn" id="cart-btn" onclick="openCartModal()" aria-label="Cart">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cart-badge">0</span>
-      </button>
+      <button class="icon-btn" id="cart-btn" onclick="openCartModal()"><i class="fas fa-shopping-cart"></i><span id="cart-badge">0</span></button>
       <div class="dropdown">
-        <button class="icon-btn" aria-label="Location"><i class="fas fa-map-marker-alt"></i></button>
+        <button class="icon-btn"><i class="fas fa-map-marker-alt"></i></button>
         <div class="dropdown-content">
-          <a href="https://maps.app.goo.gl/7ihuQEBx5pqGcPbz5" target="_blank" rel="noopener"><i class="fas fa-store"></i> Othukkungal Branch</a>
-          <a href="https://maps.app.goo.gl/oe4WV6SbhhM6DbYZ9" target="_blank" rel="noopener"><i class="fas fa-store"></i> Karuvarakkund Branch</a>
+          <a href="https://maps.app.goo.gl/7ihuQEBx5pqGcPbz5" target="_blank"><i class="fas fa-store"></i> Othukkungal Branch</a>
+          <a href="https://maps.app.goo.gl/oe4WV6SbhhM6DbYZ9" target="_blank"><i class="fas fa-store"></i> Karuvarakkund Branch</a>
         </div>
       </div>
-      <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+      <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
       <a href="tel:9847283286" class="call-btn"><i class="fas fa-phone-alt"></i> Call</a>
     </div>
   </header>
@@ -35,17 +32,17 @@
   <section class="search-container">
     <div class="search-box">
       <i class="fas fa-search"></i>
-      <input type="text" id="search-input" placeholder="Search groceries, vegetables, deals..." oninput="filterProducts()">
+      <input type="text" id="search-input" placeholder="Search products, groceries, deals..." oninput="filterProducts()">
     </div>
   </section>
 
-  <!-- Banner Slider -->
+  <!-- Carousel Banner -->
   <section class="banner-slider">
     <div class="slides" id="banner-slides"></div>
     <div class="dots" id="banner-dots"></div>
   </section>
 
-  <!-- Filter Chips -->
+  <!-- Filter Categories -->
   <section class="filters-container">
     <button class="filter-chip active" onclick="filterCategory('All', this)">All</button>
     <button class="filter-chip" onclick="filterCategory('Vegetables', this)">Veg</button>
@@ -59,13 +56,13 @@
   <main class="products-grid" id="products-grid"></main>
 
   <!-- Product Detail Modal -->
-  <div class="modal" id="product-modal" onclick="handleBackdropClick(event, 'product-modal')">
-    <div class="modal-content animate-pop">
+  <div class="modal" id="product-modal">
+    <div class="modal-content product-detail-card">
       <span class="close-btn" onclick="closeProductModal()">&times;</span>
       <div class="modal-img-container">
         <img id="modal-img" src="" alt="Product Image">
       </div>
-      <h2 id="modal-title"></h2>
+      <h2 id="modal-title">Product Name</h2>
       <p id="modal-unit" class="modal-unit"></p>
       <div class="modal-price-box">
         <span id="modal-price" class="current-price"></span>
@@ -86,27 +83,24 @@
     </div>
   </div>
 
-  <!-- Cart Details Modal -->
-  <div class="modal" id="cart-modal" onclick="handleBackdropClick(event, 'cart-modal')">
-    <div class="modal-content animate-pop">
+  <!-- Cart Modal -->
+  <div class="modal" id="cart-modal">
+    <div class="modal-content">
       <span class="close-btn" onclick="closeCartModal()">&times;</span>
-      <h2><i class="fas fa-shopping-bag"></i> Your Cart Details</h2>
-      <div id="cart-items-container" class="cart-items-list"></div>
+      <h2>Your Shopping Cart</h2>
+      <div id="cart-items-container"></div>
       <div class="cart-summary">
-        <span>Total Amount:</span>
-        <strong class="total-price">₹<span id="cart-total-price">0</span></strong>
+        Total: ₹<span id="cart-total-price">0</span>
       </div>
-      <button class="btn btn-wa full-width" onclick="openOrderModal('cart')">
-        <i class="fab fa-whatsapp"></i> Order All via WhatsApp
-      </button>
+      <button class="btn btn-wa full-width" onclick="openOrderModal('cart')"><i class="fab fa-whatsapp"></i> Order All via WhatsApp</button>
     </div>
   </div>
 
   <!-- Order / Address Modal -->
-  <div class="modal" id="order-modal" onclick="handleBackdropClick(event, 'order-modal')">
-    <div class="modal-content animate-pop">
+  <div class="modal" id="order-modal">
+    <div class="modal-content">
       <span class="close-btn" onclick="closeOrderModal()">&times;</span>
-      <h2>Delivery Details</h2>
+      <h2>Customer Details</h2>
       <form id="order-form" onsubmit="submitWhatsAppOrder(event)">
         <div class="form-group">
           <label>Full Name *</label>
@@ -118,18 +112,54 @@
         </div>
         <div class="form-group">
           <label>Delivery Address *</label>
-          <textarea id="cust-address" required placeholder="House name, street, place..."></textarea>
+          <textarea id="cust-address" required placeholder="Enter your complete home address"></textarea>
         </div>
-        <button type="submit" class="btn btn-wa full-width">
-          <i class="fab fa-whatsapp"></i> Confirm & Send WhatsApp
-        </button>
+        <button type="submit" class="btn btn-wa full-width"><i class="fab fa-whatsapp"></i> Confirm Order & Send WhatsApp</button>
       </form>
     </div>
   </div>
 
-  <!-- Firebase Web SDK v9 (Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- Hidden Admin Login / Dashboard Modal -->
+  <div class="modal" id="admin-modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeAdminModal()">&times;</span>
+      <div id="admin-auth-container">
+        <h2>Admin Login</h2>
+        <form onsubmit="handleAdminLogin(event)">
+          <div class="form-group">
+            <label>Admin Email</label>
+            <input type="email" id="admin-email" required placeholder="admin@marhaba.com">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="admin-password" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-cart full-width">Login to Dashboard</button>
+        </form>
+      </div>
+      <div id="admin-dashboard-container" style="display:none;">
+        <h2>Store Management</h2>
+        <button class="btn btn-wa" onclick="logoutAdmin()" style="margin-bottom: 15px; background: #dc3545;">Logout</button>
+        <!-- Product & Banner Management tabs built via app.js -->
+        <div id="admin-content-area"></div>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
+  <script>
+    // Secret trigger: If URL has #admin, automatically open the admin modal
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.location.hash === '#admin') {
+        setTimeout(() => {
+          if (typeof openAdminModal === 'function') openAdminModal();
+          else {
+            const modal = document.getElementById('admin-modal');
+            if (modal) modal.style.display = 'flex';
+          }
+        }, 500);
+      }
+    });
+  </script>
 </body>
 </html>
