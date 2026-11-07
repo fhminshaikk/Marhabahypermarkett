@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Header (No Admin Button Visible) -->
+  <!-- Header (Clean Customer UI - No Visible Admin Button) -->
   <header class="navbar">
     <div class="logo-container">
-      <img src="logo.png" alt="Marhaba Logo" class="app-logo" id="main-logo">
+      <img src="logo.png" alt="Marhaba Logo" class="app-logo" id="main-logo" onerror="this.style.display='none'">
       <span class="brand-name">MARHABA</span>
     </div>
     <div class="nav-actions">
@@ -119,16 +119,18 @@
     </div>
   </div>
 
-  <!-- Hidden Admin Login / Dashboard Modal -->
+  <!-- Hidden Admin Login & Dashboard Modal -->
   <div class="modal" id="admin-modal">
-    <div class="modal-content">
+    <div class="modal-content admin-modal-box">
       <span class="close-btn" onclick="closeAdminModal()">&times;</span>
+      
+      <!-- Login Section -->
       <div id="admin-auth-container">
-        <h2>Admin Login</h2>
-        <form onsubmit="handleAdminLogin(event)">
+        <h2>Admin Panel Login</h2>
+        <form onsubmit="adminLogin(event)">
           <div class="form-group">
             <label>Admin Email</label>
-            <input type="email" id="admin-email" required placeholder="admin@marhaba.com">
+            <input type="email" id="admin-email" required placeholder="fhminshaikk@gmail.com">
           </div>
           <div class="form-group">
             <label>Password</label>
@@ -137,37 +139,119 @@
           <button type="submit" class="btn btn-cart full-width">Login to Dashboard</button>
         </form>
       </div>
+
+      <!-- Logged-In Dashboard Section -->
       <div id="admin-dashboard-container" style="display:none;">
-        <h2>Store Management</h2>
-        <button class="btn btn-wa" onclick="logoutAdmin()" style="margin-bottom: 15px; background: #dc3545;">Logout</button>
-        <!-- Product & Banner Management tabs built via app.js -->
-        <div id="admin-content-area"></div>
+        <div class="admin-header">
+          <h2>Store Control Panel</h2>
+          <button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="admin-tabs">
+          <button class="admin-tab-btn active" id="tab-btn-products" onclick="switchAdminTab('products')">Products</button>
+          <button class="admin-tab-btn" id="tab-btn-banners" onclick="switchAdminTab('banners')">Banners</button>
+        </div>
+
+        <!-- Products Manager Tab -->
+        <div id="admin-tab-products" class="admin-tab-content">
+          <div class="admin-card">
+            <h3 id="product-form-title">Add New Product</h3>
+            <form id="product-form" onsubmit="saveProduct(event)">
+              <input type="hidden" id="admin-prod-id">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Product Name *</label>
+                  <input type="text" id="admin-prod-name" required placeholder="e.g. Basmati Rice 5kg">
+                </div>
+                <div class="form-group">
+                  <label>Category *</label>
+                  <select id="admin-prod-category" required>
+                    <option value="Rice & Grains">Rice & Grains</option>
+                    <option value="Vegetables">Vegetables</option>
+                    <option value="Beverages">Beverages</option>
+                    <option value="Snacks & Spices">Snacks & Spices</option>
+                    <option value="Household">Household</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Offer Price (₹) *</label>
+                  <input type="number" id="admin-prod-price" required step="0.01" placeholder="450">
+                </div>
+                <div class="form-group">
+                  <label>MRP Price (₹)</label>
+                  <input type="number" id="admin-prod-mrp" step="0.01" placeholder="520">
+                </div>
+                <div class="form-group">
+                  <label>Unit/Weight</label>
+                  <input type="text" id="admin-prod-unit" placeholder="e.g. 5 kg or 1 L">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Image URL</label>
+                <input type="url" id="admin-prod-image" placeholder="https://images.unsplash.com/...">
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="admin-prod-desc" rows="2" placeholder="Brief details about the item"></textarea>
+              </div>
+              <div class="admin-form-actions">
+                <button type="submit" class="btn btn-cart"><i class="fas fa-save"></i> Save Product</button>
+                <button type="button" class="btn btn-secondary" onclick="resetProductForm()">Cancel / Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <h3>Existing Catalog</h3>
+          <div id="admin-products-list" class="admin-list-container"></div>
+        </div>
+
+        <!-- Banners Manager Tab -->
+        <div id="admin-tab-banners" class="admin-tab-content" style="display:none;">
+          <div class="admin-card">
+            <h3>Add New Banner</h3>
+            <form id="banner-form" onsubmit="saveBanner(event)">
+              <div class="form-group">
+                <label>Banner Title</label>
+                <input type="text" id="admin-banner-title" required placeholder="e.g. Weekend Super Sale">
+              </div>
+              <div class="form-group">
+                <label>Image URL *</label>
+                <input type="url" id="admin-banner-image" required placeholder="https://images.unsplash.com/...">
+              </div>
+              <button type="submit" class="btn btn-cart"><i class="fas fa-plus"></i> Add Banner</button>
+            </form>
+          </div>
+
+          <h3>Active Banners</h3>
+          <div id="admin-banners-list" class="admin-list-container"></div>
+        </div>
+
       </div>
     </div>
   </div>
-  <!-- Firebase App & Services CDN -->
+
+  <!-- Firebase v8 SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-
-  
+  <!-- Application JS -->
   <script src="app.js"></script>
+
+  <!-- Secret URL Hash Trigger Script -->
   <script>
-    // Force open admin modal if #admin is in the URL
     function checkAdminHash() {
       if (window.location.hash === '#admin') {
         const modal = document.getElementById('admin-modal');
-        if (modal) {
-          modal.style.display = 'flex';
-        }
+        if (modal) modal.style.display = 'flex';
       }
     }
-
     window.addEventListener('DOMContentLoaded', checkAdminHash);
     window.addEventListener('load', checkAdminHash);
     window.addEventListener('hashchange', checkAdminHash);
   </script>
-</body> 
+</body>
 </html>
-  
