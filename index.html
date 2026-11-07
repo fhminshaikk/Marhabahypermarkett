@@ -6,30 +6,28 @@
   <title>Marhaba Hypermarket</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Firebase Web SDK v9 (Modular via Compat for plain JS) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <!-- Header -->
   <header class="navbar">
     <div class="logo-container">
-      <img src="logo.png" alt="Marhaba Logo" class="app-logo" id="main-logo">
+      <img src="logo.png" alt="Marhaba Logo" class="app-logo" id="main-logo" onerror="this.src='https://via.placeholder.com/40?text=M'">
       <span class="brand-name">MARHABA</span>
     </div>
     <div class="nav-actions">
-      <button class="icon-btn" id="cart-btn" onclick="openCartModal()"><i class="fas fa-shopping-cart"></i><span id="cart-badge">0</span></button>
+      <button class="icon-btn" id="cart-btn" onclick="openCartModal()" aria-label="Cart">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-badge">0</span>
+      </button>
       <div class="dropdown">
-        <button class="icon-btn"><i class="fas fa-map-marker-alt"></i></button>
+        <button class="icon-btn" aria-label="Location"><i class="fas fa-map-marker-alt"></i></button>
         <div class="dropdown-content">
-          <a href="https://maps.app.goo.gl/7ihuQEBx5pqGcPbz5" target="_blank"><i class="fas fa-store"></i> Othukkungal Branch</a>
-          <a href="https://maps.app.goo.gl/oe4WV6SbhhM6DbYZ9" target="_blank"><i class="fas fa-store"></i> Karuvarakkund Branch</a>
+          <a href="https://maps.app.goo.gl/7ihuQEBx5pqGcPbz5" target="_blank" rel="noopener"><i class="fas fa-store"></i> Othukkungal Branch</a>
+          <a href="https://maps.app.goo.gl/oe4WV6SbhhM6DbYZ9" target="_blank" rel="noopener"><i class="fas fa-store"></i> Karuvarakkund Branch</a>
         </div>
       </div>
-      <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+      <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
       <a href="tel:9847283286" class="call-btn"><i class="fas fa-phone-alt"></i> Call</a>
-      <button class="admin-login-link" onclick="openAdminModal()"><i class="fas fa-user-lock"></i> Admin</button>
     </div>
   </header>
 
@@ -37,19 +35,17 @@
   <section class="search-container">
     <div class="search-box">
       <i class="fas fa-search"></i>
-      <input type="text" id="search-input" placeholder="Search products, groceries, deals..." oninput="filterProducts()">
+      <input type="text" id="search-input" placeholder="Search groceries, vegetables, deals..." oninput="filterProducts()">
     </div>
   </section>
 
-  <!-- Carousel Banner -->
+  <!-- Banner Slider -->
   <section class="banner-slider">
-    <div class="slides" id="banner-slides">
-      <!-- Dynamic Banners Loaded Here -->
-    </div>
+    <div class="slides" id="banner-slides"></div>
     <div class="dots" id="banner-dots"></div>
   </section>
 
-  <!-- Filter Categories -->
+  <!-- Filter Chips -->
   <section class="filters-container">
     <button class="filter-chip active" onclick="filterCategory('All', this)">All</button>
     <button class="filter-chip" onclick="filterCategory('Vegetables', this)">Veg</button>
@@ -60,18 +56,16 @@
   </section>
 
   <!-- Product Grid -->
-  <main class="products-grid" id="products-grid">
-    <!-- Dynamic Products Rendered Here -->
-  </main>
+  <main class="products-grid" id="products-grid"></main>
 
   <!-- Product Detail Modal -->
-  <div class="modal" id="product-modal">
-    <div class="modal-content product-detail-card">
+  <div class="modal" id="product-modal" onclick="handleBackdropClick(event, 'product-modal')">
+    <div class="modal-content animate-pop">
       <span class="close-btn" onclick="closeProductModal()">&times;</span>
       <div class="modal-img-container">
         <img id="modal-img" src="" alt="Product Image">
       </div>
-      <h2 id="modal-title">Product Name</h2>
+      <h2 id="modal-title"></h2>
       <p id="modal-unit" class="modal-unit"></p>
       <div class="modal-price-box">
         <span id="modal-price" class="current-price"></span>
@@ -92,24 +86,27 @@
     </div>
   </div>
 
-  <!-- Cart Modal -->
-  <div class="modal" id="cart-modal">
-    <div class="modal-content">
+  <!-- Cart Details Modal -->
+  <div class="modal" id="cart-modal" onclick="handleBackdropClick(event, 'cart-modal')">
+    <div class="modal-content animate-pop">
       <span class="close-btn" onclick="closeCartModal()">&times;</span>
-      <h2>Your Shopping Cart</h2>
-      <div id="cart-items-container"></div>
+      <h2><i class="fas fa-shopping-bag"></i> Your Cart Details</h2>
+      <div id="cart-items-container" class="cart-items-list"></div>
       <div class="cart-summary">
-        Total: ₹<span id="cart-total-price">0</span>
+        <span>Total Amount:</span>
+        <strong class="total-price">₹<span id="cart-total-price">0</span></strong>
       </div>
-      <button class="btn btn-wa full-width" onclick="openOrderModal('cart')"><i class="fab fa-whatsapp"></i> Order All via WhatsApp</button>
+      <button class="btn btn-wa full-width" onclick="openOrderModal('cart')">
+        <i class="fab fa-whatsapp"></i> Order All via WhatsApp
+      </button>
     </div>
   </div>
 
   <!-- Order / Address Modal -->
-  <div class="modal" id="order-modal">
-    <div class="modal-content">
+  <div class="modal" id="order-modal" onclick="handleBackdropClick(event, 'order-modal')">
+    <div class="modal-content animate-pop">
       <span class="close-btn" onclick="closeOrderModal()">&times;</span>
-      <h2>Customer Details</h2>
+      <h2>Delivery Details</h2>
       <form id="order-form" onsubmit="submitWhatsAppOrder(event)">
         <div class="form-group">
           <label>Full Name *</label>
@@ -121,117 +118,18 @@
         </div>
         <div class="form-group">
           <label>Delivery Address *</label>
-          <textarea id="cust-address" required placeholder="Enter your complete home address"></textarea>
+          <textarea id="cust-address" required placeholder="House name, street, place..."></textarea>
         </div>
-        <button type="submit" class="btn btn-wa full-width"><i class="fab fa-whatsapp"></i> Confirm Order & Send WhatsApp</button>
+        <button type="submit" class="btn btn-wa full-width">
+          <i class="fab fa-whatsapp"></i> Confirm & Send WhatsApp
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- Admin Authentication & Management Modal -->
-  <div class="modal" id="admin-modal">
-    <div class="modal-content admin-card">
-      <span class="close-btn" onclick="closeAdminModal()">&times;</span>
-      
-      <!-- Login View -->
-      <div id="admin-login-view">
-        <h2>Admin Portal Access</h2>
-        <form onsubmit="handleAdminLogin(event)">
-          <div class="form-group">
-            <label>Email ID</label>
-            <input type="email" id="admin-email" required placeholder="admin@marhabahypermarket.com">
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="admin-password" required placeholder="••••••••">
-          </div>
-          <button type="submit" class="btn btn-primary full-width">Login</button>
-        </form>
-      </div>
-
-      <!-- Dashboard View -->
-      <div id="admin-dashboard-view" style="display:none;">
-        <div class="dashboard-header">
-          <h2>Store Management</h2>
-          <button class="btn btn-danger btn-sm" onclick="handleAdminLogout()">Logout</button>
-        </div>
-
-        <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchAdminTab('manage-products')">Products</button>
-          <button class="tab-btn" onclick="switchAdminTab('manage-banners')">Banners</button>
-        </div>
-
-        <!-- Manage Products Tab -->
-        <div id="manage-products" class="tab-content active">
-          <h3>Add / Update Product</h3>
-          <form id="product-form" onsubmit="saveProduct(event)">
-            <input type="hidden" id="prod-id">
-            <div class="form-group">
-              <label>Product Name</label>
-              <input type="text" id="prod-name" required>
-            </div>
-            <div class="form-group">
-              <label>Category</label>
-              <select id="prod-category">
-                <option value="Vegetables">Vegetables</option>
-                <option value="Rice & Grains">Rice & Grains</option>
-                <option value="Beverages">Beverages</option>
-                <option value="Snacks & Spices">Snacks & Spices</option>
-                <option value="Household">Household</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Offer Price (₹)</label>
-                <input type="number" id="prod-price" required>
-              </div>
-              <div class="form-group">
-                <label>MRP (₹)</label>
-                <input type="number" id="prod-mrp">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Unit/Quantity (e.g., 1 kg, 500 ml)</label>
-              <input type="text" id="prod-unit" required>
-            </div>
-            <div class="form-group">
-              <label>Image URL</label>
-              <input type="url" id="prod-image" required placeholder="https://example.com/image.jpg">
-            </div>
-            <div class="form-group">
-              <label>Description</label>
-              <textarea id="prod-desc"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary full-width">Save Product</button>
-          </form>
-          <hr>
-          <h3>Product Inventory List</h3>
-          <div id="admin-product-list" class="admin-item-list"></div>
-        </div>
-
-        <!-- Manage Banners Tab -->
-        <div id="manage-banners" class="tab-content">
-          <h3>Add Promo Banner</h3>
-          <form id="banner-form" onsubmit="saveBanner(event)">
-            <div class="form-group">
-              <label>Banner Title / Description</label>
-              <input type="text" id="banner-title" required>
-            </div>
-            <div class="form-group">
-              <label>Banner Image URL</label>
-              <input type="url" id="banner-image" required placeholder="https://example.com/banner.jpg">
-            </div>
-            <button type="submit" class="btn btn-primary full-width">Add Banner</button>
-          </form>
-          <hr>
-          <h3>Active Banners</h3>
-          <div id="admin-banner-list" class="admin-item-list"></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
+  <!-- Firebase Web SDK v9 (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
