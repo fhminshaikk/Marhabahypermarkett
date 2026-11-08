@@ -8,7 +8,7 @@ const firebaseConfig = {
   storageBucket: "marhabahypermarkett-406e1.firebasestorage.app'",
   messagingSenderId: "440934579028",
   appId: "440934579028:web:70afd288e0d3d931bfe6c1"
-};
+}; 
 // ==========================================
 // 1. FIREBASE CONFIGURATION & INITIALIZATION
 // ==========================================
@@ -114,7 +114,7 @@ function setupRealtimeListeners() {
 }
 
 // ==========================================
-// 3. STOREFRONT RENDERING LOGIC
+// 3. STOREFRONT RENDERING & DUAL ACTIONS
 // ==========================================
 function renderProducts() {
   const grid = document.getElementById('products-grid');
@@ -142,7 +142,7 @@ function renderProducts() {
     card.innerHTML = `
       <div class="card-img-wrap">
         <img src="${p.image || 'https://via.placeholder.com/300'}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300'">
-        ${p.mrp && p.mrp > p.price ? `<span class="badge-off">SAVE ₹${Math.round(p.mrp - p.price)}</span>` : ''}
+        ${p.mrp && p.mrp > p.price ? `<span class="badge-off"><i class="fas fa-tag"></i> SAVE ₹${Math.round(p.mrp - p.price)}</span>` : ''}
         ${p.inStock === false ? `<span class="badge-stock">Out of Stock</span>` : ''}
       </div>
       <div class="card-details">
@@ -153,13 +153,26 @@ function renderProducts() {
           <span class="card-price">₹${p.price}</span>
           ${p.mrp ? `<span class="card-mrp">₹${p.mrp}</span>` : ''}
         </div>
-        <button class="btn btn-add" ${p.inStock === false ? 'disabled' : ''} onclick="event.stopPropagation(); quickAddToCart('${p.id}')">
-          <i class="fas fa-plus"></i> Add
-        </button>
+        <div class="card-actions-dual">
+          <button class="btn-card-action btn-add-cart liquid-ripple" ${p.inStock === false ? 'disabled' : ''} onclick="event.stopPropagation(); quickAddToCart('${p.id}')">
+            <i class="fas fa-cart-plus"></i> + Cart
+          </button>
+          <button class="btn-card-action btn-quick-buy liquid-ripple" ${p.inStock === false ? 'disabled' : ''} onclick="event.stopPropagation(); quickBuyNow('${p.id}')">
+            <i class="fas fa-bolt"></i> Buy
+          </button>
+        </div>
       </div>
     `;
     grid.appendChild(card);
   });
+}
+
+function quickBuyNow(id) {
+  const item = products.find(p => p.id === id);
+  if (!item) return;
+  selectedProduct = item;
+  selectedQuantity = 1;
+  openOrderModal('single');
 }
 
 function renderBanners() {
@@ -280,7 +293,7 @@ function openCartModal() {
   let total = 0;
 
   if (cart.length === 0) {
-    container.innerHTML = '<p class="empty-msg">Your shopping cart is empty.</p>';
+    container.innerHTML = '<p class="empty-msg"><i class="fas fa-shopping-bag"></i> Your shopping cart is empty.</p>';
   } else {
     cart.forEach(item => {
       const itemTotal = item.price * item.qty;
@@ -539,4 +552,4 @@ function renderAdminBannersList() {
     list.appendChild(item);
   });
     }
-                        2
+    
